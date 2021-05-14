@@ -1,12 +1,11 @@
-import {Entity, PrimaryGeneratedColumn, Column, BaseEntity, CreateDateColumn, UpdateDateColumn, BeforeInsert} from "typeorm";
+import {Entity, Column} from "typeorm";
 
 import {v4 as uuid} from 'uuid'
 
-@Entity("users")
-export class User extends BaseEntity {
+import Model from './Model'
 
-    @PrimaryGeneratedColumn()
-    id: number;
+@Entity("users")
+export class User extends Model {
 
     @Column()
     name: string;
@@ -17,18 +16,5 @@ export class User extends BaseEntity {
     @Column()
     email: string;
 
-    @Column({type: 'uuid'})
-    uuid: string
-
-    @CreateDateColumn()
-    createdAt: Date;
-
-    @UpdateDateColumn()
-    updatedAt: Date;
-
-    @BeforeInsert()
-    createUuid(){
-        this.uuid=uuid()
-    }
-
+    
 }

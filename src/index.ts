@@ -18,12 +18,12 @@ app.post('/users',async(req:Request,res: Response)=>{
         return res.status(201).json(user)
     }catch(err){
         console.log(err)
-        return res.status(500).json(err)
+        return res.status(500).json({err:'Something went wrong in post request'})
     }
 })
 
 
-//READ
+//READ USERS
 
 app.get('/users',async(_:Request,res: Response)=>{
    
@@ -33,13 +33,70 @@ app.get('/users',async(_:Request,res: Response)=>{
         return res.json(users)
     }catch(err){
         console.log(err)
-        return res.status(500).json(err)
+        return res.status(500).json({err:'Something went wrong in get request'})
     }
 })
 
-//UPDATE
-//DELETE
-//FIND
+//UPDATE USERS
+
+
+app.put('/users/:uuid',async (req: Request,res: Response)=>{
+    const uuid=req.params.uuid
+    const {name, role, email}=req.body
+    try {
+            const user= await User.findOneOrFail({uuid}); //finds the user by uuid
+           user.name=name||user.name
+           user.role=role||user.role
+           user.email=email||user.email
+
+           await user.save()
+           return res.json(user)
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({error:'Something went wrong in update request'})
+    }
+})
+
+//DELETE USERS
+
+
+app.delete('/users/:uuid',async (req: Request,res: Response)=>{
+    const uuid=req.params.uuid
+    
+    try {
+            const user= await User.findOneOrFail({uuid}); //finds the user by uuid
+           
+
+           await user.remove()
+           return res.status(204).json({message: 'User deleted successfully'})
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({error:'Something went wrong in delete request'})
+    }
+})
+
+
+//FIND USERS BY ID
+
+app.get('/users/:uuid',async (req: Request,res: Response)=>{
+    const uuid=req.params.uuid
+    
+    try {
+            const user= await User.findOneOrFail({uuid}); //finds the user by uuid
+           
+
+           return res.json(user)
+    } catch (error) {
+        console.log(error)
+        return res.status(404).json({user:'User not found.'})
+    }
+})
+
+
+
+
+
+
 
 createConnection().then(async() => {
 
