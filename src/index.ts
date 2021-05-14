@@ -9,7 +9,7 @@ const app=express()
 app.use(express.json())
 
 
-//CREATE
+//CREATE USERS`
 app.post('/users',async(req:Request,res: Response)=>{
     const {name, role, email}=req.body
     try{
