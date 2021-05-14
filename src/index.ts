@@ -3,6 +3,7 @@ import {createConnection} from "typeorm";
 import {User} from "./entity/User";
 
 import express, { Request, Response } from 'express'
+import { Post } from "./entity/Post";
 
 
 const app=express()
@@ -22,6 +23,20 @@ app.post('/users',async(req:Request,res: Response)=>{
     }
 })
 
+
+//CREATE POSTS
+app.post('/posts',async(req:Request,res: Response)=>{
+    const {userUuid,title,body}=req.body
+    try{
+        const user=User.findOneOrFail({uuid:userUuid})
+        const post= new Post({title,body})
+        await post.save()
+        return res.status(201).json(post)
+    }catch(err){
+        console.log(err)
+        return res.status(500).json({err:'Something went wrong in post request'})
+    }
+})
 
 //READ USERS
 
