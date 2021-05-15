@@ -1,6 +1,7 @@
+import { IsEmail, IsEnum, Length } from "class-validator";
 import {Entity, Column, OneToMany} from "typeorm";
 
-import {v4 as uuid} from 'uuid'
+
 
 import Model from './Model'
 import { Post } from "./Post";
@@ -9,12 +10,20 @@ import { Post } from "./Post";
 export class User extends Model {
 
     @Column()
+    @Length(1,255)
     name: string;
 
-    @Column()
+    @Column({
+        type:'enum',
+        enum:['user','admin','superadmin'],
+        default:'user'
+    })
+    @IsEnum(['user','admin','superadmin',undefined])
     role: string;
 
     @Column()
+    @Length(1,255)
+    @IsEmail()
     email: string;
 
     @OneToMany(()=>Post,post=>post.user)

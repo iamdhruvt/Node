@@ -11,6 +11,7 @@
       "typescript": "^4.2.4"
    },
    "dependencies": {
+      "class-validator": "^0.13.1",
       "express": "^4.17.1",
       "killall": "^1.0.4",
       "mysql": "^2.14.1",

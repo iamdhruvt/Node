@@ -4,7 +4,7 @@ import {User} from "./entity/User";
 
 import express, { Request, Response } from 'express'
 import { Post } from "./entity/Post";
-
+import {validate } from 'class-validator'
 
 const app=express()
 app.use(express.json())
@@ -15,6 +15,8 @@ app.post('/users',async(req:Request,res: Response)=>{
     const {name, role, email}=req.body
     try{
         const user=User.create({name,role,email})
+        const errors=await validate(user)
+        if (errors.length>0) throw errors
         await user.save()
         return res.status(201).json(user)
     }catch(err){
@@ -28,10 +30,26 @@ app.post('/users',async(req:Request,res: Response)=>{
 app.post('/posts',async(req:Request,res: Response)=>{
     const {userUuid,title,body}=req.body
     try{
-        const user=User.findOneOrFail({uuid:userUuid})
-        const post= new Post({title,body})
+        const user= await User.findOneOrFail({uuid:userUuid})
+        const post= new Post({title,body,user})
         await post.save()
         return res.status(201).json(post)
+    }catch(err){
+        console.log(err)
+        return res.status(500).json({err:'Something went wrong in post request'})
+    }
+})
+
+
+
+//READ POSTS
+app.get('/posts',async(req:Request,res: Response)=>{
+   
+    try{
+       
+        const posts= await Post.find({relations:['user']})
+       
+        return res.status(201).json(posts)
     }catch(err){
         console.log(err)
         return res.status(500).json({err:'Something went wrong in post request'})
@@ -43,7 +61,7 @@ app.post('/posts',async(req:Request,res: Response)=>{
 app.get('/users',async(_:Request,res: Response)=>{
    
     try{
-        const users=await User.find()
+        const users=await User.find({relations:['posts']})
 
         return res.json(users)
     }catch(err){
