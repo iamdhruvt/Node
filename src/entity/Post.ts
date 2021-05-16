@@ -15,7 +15,4 @@ export class Post extends Model {
     @ManyToOne(()=>User)
     user:User;
 
-
-  
- 
 }

@@ -2,7 +2,6 @@ import { IsEmail, IsEnum, Length } from "class-validator";
 import {Entity, Column, OneToMany} from "typeorm";
 
 
-
 import Model from './Model'
 import { Post } from "./Post";
 
@@ -25,6 +24,10 @@ export class User extends Model {
     @Length(1,255)
     @IsEmail()
     email: string;
+
+    @Column()
+    @Length(5,255)
+    pwd: string;
 
     @OneToMany(()=>Post,post=>post.user)
     posts: Post[]

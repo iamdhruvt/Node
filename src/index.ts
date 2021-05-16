@@ -12,9 +12,9 @@ app.use(express.json())
 
 //CREATE USERS
 app.post('/users',async(req:Request,res: Response)=>{
-    const {name, role, email}=req.body
+    const {name, role, email,pwd}=req.body
     try{
-        const user=User.create({name,role,email})
+        const user=User.create({name,role,email,pwd})
         const errors=await validate(user)
         if (errors.length>0) throw errors
         await user.save()
@@ -75,12 +75,13 @@ app.get('/users',async(_:Request,res: Response)=>{
 
 app.put('/users/:uuid',async (req: Request,res: Response)=>{
     const uuid=req.params.uuid
-    const {name, role, email}=req.body
+    const {name, role, email,pwd}=req.body
     try {
             const user= await User.findOneOrFail({uuid}); //finds the user by uuid
            user.name=name||user.name
            user.role=role||user.role
            user.email=email||user.email
+           user.pwd=pwd||user.pwd
 
            await user.save()
            return res.json(user)
@@ -99,7 +100,6 @@ app.delete('/users/:uuid',async (req: Request,res: Response)=>{
     try {
             const user= await User.findOneOrFail({uuid}); //finds the user by uuid
            
-
            await user.remove()
            return res.status(204).json({message: 'User deleted successfully'})
     } catch (error) {
@@ -125,9 +125,6 @@ app.get('/users/:uuid',async (req: Request,res: Response)=>{
         return res.status(404).json({user:'User not found.'})
     }
 })
-
-
-
 
 
 
