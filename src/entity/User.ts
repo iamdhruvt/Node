@@ -14,10 +14,10 @@ export class User extends Model {
 
     @Column({
         type:'enum',
-        enum:['user','admin','superadmin'],
-        default:'user'
+        enum:['Employee','Manager','IT','Customer Relations','Team Lead','CEO','HR','Junior Software Programmer',undefined],
+        default:'Employee'
     })
-    @IsEnum(['user','admin','superadmin',undefined])
+    @IsEnum(['Employee','Manager','IT','Customer Relations','Team Lead','CEO','HR','Junior Software Programmer',undefined])
     role: string;
 
     @Column()
